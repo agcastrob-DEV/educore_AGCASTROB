@@ -9,7 +9,8 @@ public class Empleado extends Persona {
   private LocalDate fechaIngreso;
   private TipoEmpleado tipo;
 
-  public Empleado(int id, String nombre, String apellidos, String email, double salario, LocalDate fechaIngreso, TipoEmpleado tipo) {
+  public Empleado(int id, String nombre, String apellidos, String email, double salario, LocalDate fechaIngreso,
+      TipoEmpleado tipo) {
     super(id, nombre, apellidos, email);
     this.salario = salario;
     this.fechaIngreso = fechaIngreso;
@@ -34,14 +35,21 @@ public class Empleado extends Persona {
 
   @Override
   public String getTipo() {
-    // Retorna una cadena limpia y legible para la interfaz de usuario, adaptada según el enum
+    // Retorna una cadena limpia y legible para la interfaz de usuario, adaptada
+    // según el enum
     switch (this.tipo) {
-      case DOCENTE: return "Docente";
-      case ADMINISTRATIVO: return "Administrativo";
-      case GUARDA: return "Guarda de Seguridad";
-      case MISCELANEO: return "Misceláneo";
-      case MANTENIMIENTO: return "Mantenimiento";
-      default: return "Empleado";
+      case DOCENTE:
+        return "Docente";
+      case ADMINISTRATIVO:
+        return "Administrativo";
+      case GUARDA:
+        return "Guarda de Seguridad";
+      case MISCELANEO:
+        return "Misceláneo";
+      case MANTENIMIENTO:
+        return "Mantenimiento";
+      default:
+        return "Empleado";
     }
   }
 
@@ -55,7 +63,8 @@ public class Empleado extends Persona {
 
   @Override
   public String getInfo() {
-    // Sigue exactamente el formato visual de Estudiante.java utilizando el formato de colones (₡)
+    // Sigue exactamente el formato visual de Estudiante.java utilizando el formato
+    // de colones (₡)
     return String.format(
         "[%s] %s %s | Email: %s | Salario: ₡%.2f | Ingreso: %s",
         getTipo(), getNombre(), getApellidos(), getEmail(), salario, fechaIngreso);

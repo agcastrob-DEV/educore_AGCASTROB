@@ -1,8 +1,10 @@
 package edu.uam.educore.model.personas;
 
 /**
- * Estudiante con beca parcial o total. Parte de la rama de referencia (ya resuelta): un becado paga
- * {@code TARIFA_BASE * (1 - porcentajeBeca)} — p. ej. una beca del 50% paga ₡75 000.
+ * Estudiante con beca parcial o total. Parte de la rama de referencia (ya
+ * resuelta): un becado paga
+ * {@code TARIFA_BASE * (1 - porcentajeBeca)} — p. ej. una beca del 50% paga ₡75
+ * 000.
  */
 public class EstudianteBecado extends Estudiante {
   private double porcentajeBeca;

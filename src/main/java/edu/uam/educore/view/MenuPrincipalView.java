@@ -26,15 +26,15 @@ public class MenuPrincipalView extends VistaBase {
     this.estudianteView = new EstudianteView(scanner, estudianteRepo);
     this.empleadoView = new EmpleadoView(scanner, empleadoRepo);
     this.edificioView = new EdificioView(scanner, edificioRepo);
-    
-    // La vista académica cruza los datos usando el controlador de edificios y los repositorios hermanos
+
+    // La vista académica cruza los datos usando el controlador de edificios y los
+    // repositorios hermanos
     this.seccionView = new SeccionView(
-        scanner, 
-        seccionRepo, 
-        this.edificioView.getController(), 
-        empleadoRepo, 
-        estudianteRepo
-    );
+        scanner,
+        seccionRepo,
+        this.edificioView.getController(),
+        empleadoRepo,
+        estudianteRepo);
   }
 
   public void iniciar() {
@@ -71,7 +71,8 @@ public class MenuPrincipalView extends VistaBase {
     return leerEntero();
   }
 
-  // Helper interno para agrupar Infraestructura y Secciones bajo la Opción 3 del enunciado
+  // Helper interno para agrupar Infraestructura y Secciones bajo la Opción 3 del
+  // enunciado
   private void mostrarSubMenuAcademico() {
     boolean enSubMenu = true;
     while (enSubMenu) {
@@ -80,7 +81,7 @@ public class MenuPrincipalView extends VistaBase {
       System.out.println("2. Control de Grupos (Secciones y Matrícula)");
       System.out.println("0. Volver al Menú Principal");
       System.out.print("Seleccione una opción: ");
-      
+
       int opcion = leerEntero();
       if (opcion == 1) {
         edificioView.iniciar();

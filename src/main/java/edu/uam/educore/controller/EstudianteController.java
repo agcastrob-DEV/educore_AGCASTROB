@@ -31,8 +31,7 @@ public class EstudianteController {
     if (!Validador.validarPorcentajeBeca(porcentajeBeca)) {
       throw new IllegalArgumentException("Porcentaje de beca inválido (debe ser entre 0.0 y 1.0).");
     }
-    EstudianteBecado e =
-        new EstudianteBecado(proximoId, nombre, apellidos, email, carnet, porcentajeBeca);
+    EstudianteBecado e = new EstudianteBecado(proximoId, nombre, apellidos, email, carnet, porcentajeBeca);
     repo.guardar(e);
     proximoId++;
     return e;

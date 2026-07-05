@@ -12,7 +12,7 @@ class EmpleadoTest {
   void constructor_asigna_valores_correctamente() {
     LocalDate fecha = LocalDate.of(2026, 1, 1);
     Empleado e = new Empleado(1, "Andres", "Castro", "andres@uam.edu", 500000.0, fecha, TipoEmpleado.DOCENTE);
-    
+
     assertEquals(1, e.getId());
     assertEquals("Andres", e.getNombre());
     assertEquals("Castro", e.getApellidos());
@@ -27,7 +27,7 @@ class EmpleadoTest {
     LocalDate fecha = LocalDate.now();
     Empleado e1 = new Empleado(1, "Juan", "Perez", "j@uam.edu", 400000.0, fecha, TipoEmpleado.DOCENTE);
     Empleado e2 = new Empleado(2, "Maria", "Solano", "m@uam.edu", 350000.0, fecha, TipoEmpleado.GUARDA);
-    
+
     assertEquals("Docente", e1.getTipo());
     assertEquals("Guarda de Seguridad", e2.getTipo());
   }
@@ -36,9 +36,9 @@ class EmpleadoTest {
   void getInfo_contiene_formato_y_datos_clave() {
     LocalDate fecha = LocalDate.of(2025, 5, 10);
     Empleado e = new Empleado(3, "Julia", "Flores", "julia@uam.edu", 620000.50, fecha, TipoEmpleado.ADMINISTRATIVO);
-    
+
     String info = e.getInfo();
-    
+
     assertTrue(info.contains("[Administrativo]"));
     assertTrue(info.contains("Julia Flores"));
     assertTrue(info.contains("julia@uam.edu"));

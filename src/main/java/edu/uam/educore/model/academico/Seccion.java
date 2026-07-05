@@ -10,8 +10,8 @@ public class Seccion {
 
   private int id;
   private String codigoSeccion; // ej. "A-01"
-  private String curso;         // ej. "Estructuras de Datos"
-  private Empleado profesor;    // Debe ser de tipo DOCENTE
+  private String curso; // ej. "Estructuras de Datos"
+  private Empleado profesor; // Debe ser de tipo DOCENTE
   private Aula aula;
   private List<Estudiante> estudiantesMatriculados;
 
@@ -75,7 +75,7 @@ public class Seccion {
   public String getInfo() {
     return String.format(
         "Sección ID: %d | Código: %s | Curso: %s | Prof: %s | Aula: %s (%s) | Matriculados: %d",
-        id, codigoSeccion, curso, 
+        id, codigoSeccion, curso,
         (profesor != null ? profesor.getNombre() + " " + profesor.getApellidos() : "Sin asignar"),
         (aula != null ? aula.getNumero() : "Sin asignar"),
         (aula != null && aula.getEdificio() != null ? aula.getEdificio().getCodigo() : "N/A"),
