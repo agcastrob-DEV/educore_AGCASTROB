@@ -1,6 +1,8 @@
 package edu.uam.educore.socket;
 
+import edu.uam.educore.db.Conexion;
 import edu.uam.educore.db.ConfiguracionBD;
+import edu.uam.educore.exception.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,7 +10,13 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Servidor de Matrícula. Recibe por socket la orden MATRICULAR &lt;archivo&gt;, lee ese CSV del
@@ -88,9 +96,119 @@ public class ServidorMatricula {
    * <p>Referencia del patrón JDBC: EstudianteRepoSql.
    */
   private int procesarLote(String archivo) throws Exception {
-    // Acá va su lógica: leer el CSV de entradaDir.resolve(archivo), abrir la conexión con
-    // setAutoCommit(false) y matricular todo el lote en UNA transacción (commit al final,
-    // rollback si cualquier renglón falla). Ver el javadoc de arriba y EstudianteRepoSql.
-    throw new UnsupportedOperationException("Matrícula aún no implementada");
+    Path rutaCsv = entradaDir.resolve(archivo);
+    if (!Files.exists(rutaCsv)) {
+      throw new IOException("El archivo " + archivo + " no existe en el directorio de entrada.");
+    }
+
+    List<String[]> lineas = new ArrayList<>();
+    try (BufferedReader reader = Files.newBufferedReader(rutaCsv, StandardCharsets.UTF_8)) {
+      String l;
+      while ((l = reader.readLine()) != null) {
+        l = l.trim();
+        if (l.isEmpty()) {
+          continue;
+        }
+        if (l.startsWith("carnet,codigoSeccion") || l.startsWith("carnet,codigo")) {
+          continue; // Cabecera
+        }
+        String[] parts = l.split(",");
+        if (parts.length >= 2) {
+          lineas.add(new String[] {parts[0].trim(), parts[1].trim()});
+        }
+      }
+    }
+
+    int count = 0;
+    try (Connection con = Conexion.getConnection(config.url(), config.usuario(), config.contrasena())) {
+      con.setAutoCommit(false);
+      try {
+        String selectEst = "SELECT id FROM estudiante WHERE carnet = ?";
+        String selectSec = "SELECT s.id AS seccion_id, a.capacidad AS capacidad "
+            + "FROM seccion s "
+            + "JOIN aula a ON s.aula_id = a.id "
+            + "WHERE s.codigo = ?";
+        String selectCount = "SELECT COUNT(*) AS total FROM matricula WHERE seccion_id = ?";
+        String selectCheckMat = "SELECT COUNT(*) AS total FROM matricula WHERE estudiante_id = ? AND seccion_id = ?";
+        String insertMat = "INSERT INTO matricula (estudiante_id, seccion_id) VALUES (?, ?)";
+
+        try (PreparedStatement psEst = con.prepareStatement(selectEst);
+             PreparedStatement psSec = con.prepareStatement(selectSec);
+             PreparedStatement psCount = con.prepareStatement(selectCount);
+             PreparedStatement psCheckMat = con.prepareStatement(selectCheckMat);
+             PreparedStatement psInsert = con.prepareStatement(insertMat)) {
+
+          for (String[] row : lineas) {
+            String carnet = row[0];
+            String codigoSeccion = row[1];
+
+            // 1. Buscar estudiante
+            psEst.setString(1, carnet);
+            int estudianteId = -1;
+            try (ResultSet rs = psEst.executeQuery()) {
+              if (rs.next()) {
+                estudianteId = rs.getInt("id");
+              }
+            }
+            if (estudianteId == -1) {
+              throw new EstudianteNoEncontradoException(carnet);
+            }
+
+            // 2. Buscar sección y su capacidad de aula
+            psSec.setString(1, codigoSeccion);
+            int seccionId = -1;
+            int capacidad = 0;
+            try (ResultSet rs = psSec.executeQuery()) {
+              if (rs.next()) {
+                seccionId = rs.getInt("seccion_id");
+                capacidad = rs.getInt("capacidad");
+              }
+            }
+            if (seccionId == -1) {
+              throw new SeccionNoEncontradaException(codigoSeccion);
+            }
+
+            // 3. Verificar cupo
+            psCount.setInt(1, seccionId);
+            int inscritos = 0;
+            try (ResultSet rs = psCount.executeQuery()) {
+              if (rs.next()) {
+                inscritos = rs.getInt("total");
+              }
+            }
+            if (inscritos >= capacidad) {
+              throw new CupoLlenoException(codigoSeccion);
+            }
+
+            // 4. Verificar duplicado
+            psCheckMat.setInt(1, estudianteId);
+            psCheckMat.setInt(2, seccionId);
+            boolean duplicada = false;
+            try (ResultSet rs = psCheckMat.executeQuery()) {
+              if (rs.next()) {
+                duplicada = (rs.getInt("total") > 0);
+              }
+            }
+            if (duplicada) {
+              throw new MatriculaDuplicadaException(carnet, codigoSeccion);
+            }
+
+            // 5. Insertar matrícula
+            psInsert.setInt(1, estudianteId);
+            psInsert.setInt(2, seccionId);
+            psInsert.executeUpdate();
+            count++;
+          }
+        }
+
+        con.commit();
+        return count;
+      } catch (Exception ex) {
+        con.rollback();
+        throw ex;
+      } finally {
+        con.setAutoCommit(true);
+      }
+    }
   }
 }
