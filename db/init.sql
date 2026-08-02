@@ -28,6 +28,41 @@ CREATE TABLE IF NOT EXISTS empleado (
   tipo          VARCHAR(30) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS edificio (
+  id     INT AUTO_INCREMENT PRIMARY KEY,
+  codigo VARCHAR(50) UNIQUE NOT NULL,
+  nombre VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS aula (
+  id          INT AUTO_INCREMENT PRIMARY KEY,
+  numero      VARCHAR(50) NOT NULL,
+  capacidad   INT NOT NULL,
+  tipo        VARCHAR(30) NOT NULL,
+  edificio_id INT NOT NULL,
+  FOREIGN KEY (edificio_id) REFERENCES edificio(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS seccion (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  codigo     VARCHAR(50) UNIQUE NOT NULL,
+  nombre     VARCHAR(100) NOT NULL,
+  docente_id INT NOT NULL,
+  aula_id    INT NOT NULL,
+  FOREIGN KEY (docente_id) REFERENCES empleado(id),
+  FOREIGN KEY (aula_id) REFERENCES aula(id)
+);
+
+CREATE TABLE IF NOT EXISTS matricula (
+  id            INT AUTO_INCREMENT PRIMARY KEY,
+  estudiante_id INT NOT NULL,
+  seccion_id    INT NOT NULL,
+  FOREIGN KEY (estudiante_id) REFERENCES estudiante(id),
+  FOREIGN KEY (seccion_id) REFERENCES seccion(id),
+  UNIQUE(estudiante_id, seccion_id)
+);
+
+
 
 -- ── Datos semilla ────────────────────────────────────────────────────────────
 INSERT INTO estudiante (tipo, nombre, apellidos, email, carnet, porcentaje_beca) VALUES

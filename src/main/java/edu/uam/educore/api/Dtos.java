@@ -6,11 +6,11 @@ package edu.uam.educore.api;
 // hacen falta en cuanto descomenten cualquiera de los 3 bloques (los usan los listaDesde).
 import java.util.ArrayList;
 import java.util.List;
-// import edu.uam.educore.enums.TipoAula;
+import edu.uam.educore.enums.TipoAula;
 import edu.uam.educore.enums.TipoEmpleado;
-// import edu.uam.educore.model.academico.Seccion;
-// import edu.uam.educore.model.infraestructura.Aula;
-// import edu.uam.educore.model.infraestructura.Edificio;
+import edu.uam.educore.model.academico.Seccion;
+import edu.uam.educore.model.infraestructura.Aula;
+import edu.uam.educore.model.infraestructura.Edificio;
 import edu.uam.educore.model.personas.Empleado;
 import edu.uam.educore.model.personas.Estudiante;
 import edu.uam.educore.model.personas.EstudianteBecado;
@@ -100,81 +100,77 @@ public final class Dtos {
   }
 
   // ── Edificio / Aula (P1 de cada grupo) ──
-  // TODO(estudiante · P1): descomenten este bloque completo (y los imports de Edificio/Aula/
-  // TipoAula arriba) cuando ya tengan sus propias clases Edificio y Aula.
-  //
-  // public record EdificioRequest(String codigo, String nombre) {}
-  //
-  // public record AulaRequest(String numero, int capacidad, TipoAula tipo) {}
-  //
-  // public record AulaDto(int id, String numero, int capacidad, String tipo) {
-  //   public static AulaDto desde(Aula a) {
-  //     return new AulaDto(a.getId(), a.getNumero(), a.getCapacidad(), a.getTipo().name());
-  //   }
-  // }
-  //
-  // public record EdificioDto(int id, String codigo, String nombre, List<AulaDto> aulas) {
-  //   public static EdificioDto desde(Edificio e) {
-  //     return new EdificioDto(
-  //         e.getId(),
-  //         e.getCodigo(),
-  //         e.getNombre(),
-  //         e.getAulas().stream().map(AulaDto::desde).toList());
-  //   }
-  //
-  //   public static List<EdificioDto> listaDesde(List<Edificio> edificios) {
-  //     List<EdificioDto> resultado = new ArrayList<>();
-  //     for (Edificio e : edificios) {
-  //       resultado.add(EdificioDto.desde(e));
-  //     }
-  //     return resultado;
-  //   }
-  // }
+
+  public record EdificioRequest(String codigo, String nombre) {}
+
+  public record AulaRequest(String numero, int capacidad, TipoAula tipo) {}
+
+  public record AulaDto(int id, String numero, int capacidad, String tipo) {
+    public static AulaDto desde(Aula a) {
+      return new AulaDto(a.getId(), a.getNumero(), a.getCapacidad(), a.getTipoEnum().name());
+    }
+  }
+
+  public record EdificioDto(int id, String codigo, String nombre, List<AulaDto> aulas) {
+    public static EdificioDto desde(Edificio e) {
+      return new EdificioDto(
+          e.getId(),
+          e.getCodigo(),
+          e.getNombre(),
+          e.getAulas().stream().map(AulaDto::desde).toList());
+    }
+
+    public static List<EdificioDto> listaDesde(List<Edificio> edificios) {
+      List<EdificioDto> resultado = new ArrayList<>();
+      for (Edificio e : edificios) {
+        resultado.add(EdificioDto.desde(e));
+      }
+      return resultado;
+    }
+  }
 
   // ── Sección (P1 de cada grupo) ──
-  // TODO(estudiante · P1): descomenten este bloque completo (y el import de Seccion arriba)
-  // cuando ya tengan su propia clase Seccion.
-  //
-  // public record SeccionRequest(String codigo, String nombre, int aulaId, int docenteId) {}
-  //
-  // public record InscripcionRequest(int estudianteId) {}
-  //
-  // public record EstudianteResumenDto(int id, String nombre, String carnet) {
-  //   public static EstudianteResumenDto desde(Estudiante e) {
-  //     return new EstudianteResumenDto(
-  //         e.getId(), e.getNombre() + " " + e.getApellidos(), e.getCarnet());
-  //   }
-  // }
-  //
-  // public record SeccionDto(
-  //     int id,
-  //     String codigo,
-  //     String nombre,
-  //     int docenteId,
-  //     String docenteNombre,
-  //     int aulaId,
-  //     String aulaNumero,
-  //     List<EstudianteResumenDto> estudiantes) {
-  //   public static SeccionDto desde(Seccion s) {
-  //     return new SeccionDto(
-  //         s.getId(),
-  //         s.getCodigo(),
-  //         s.getNombre(),
-  //         s.getDocente().getId(),
-  //         s.getDocente().getNombre() + " " + s.getDocente().getApellidos(),
-  //         s.getAula().getId(),
-  //         s.getAula().getNumero(),
-  //         s.getEstudiantes().stream().map(EstudianteResumenDto::desde).toList());
-  //   }
-  //
-  //   public static List<SeccionDto> listaDesde(List<Seccion> secciones) {
-  //     List<SeccionDto> resultado = new ArrayList<>();
-  //     for (Seccion s : secciones) {
-  //       resultado.add(SeccionDto.desde(s));
-  //     }
-  //     return resultado;
-  //   }
-  // }
+
+  public record SeccionRequest(String codigo, String nombre, int aulaId, int docenteId) {}
+
+  public record InscripcionRequest(int estudianteId) {}
+
+  public record EstudianteResumenDto(int id, String nombre, String carnet) {
+    public static EstudianteResumenDto desde(Estudiante e) {
+      return new EstudianteResumenDto(
+          e.getId(), e.getNombre() + " " + e.getApellidos(), e.getCarnet());
+    }
+  }
+
+  public record SeccionDto(
+      int id,
+      String codigo,
+      String nombre,
+      int docenteId,
+      String docenteNombre,
+      int aulaId,
+      String aulaNumero,
+      List<EstudianteResumenDto> estudiantes) {
+    public static SeccionDto desde(Seccion s) {
+      return new SeccionDto(
+          s.getId(),
+          s.getCodigoSeccion(),
+          s.getCurso(),
+          s.getProfesor() != null ? s.getProfesor().getId() : 0,
+          s.getProfesor() != null ? s.getProfesor().getNombre() + " " + s.getProfesor().getApellidos() : "Sin asignar",
+          s.getAula() != null ? s.getAula().getId() : 0,
+          s.getAula() != null ? s.getAula().getNumero() : "Sin asignar",
+          s.getEstudiantesMatriculados().stream().map(EstudianteResumenDto::desde).toList());
+    }
+
+    public static List<SeccionDto> listaDesde(List<Seccion> secciones) {
+      List<SeccionDto> resultado = new ArrayList<>();
+      for (Seccion s : secciones) {
+        resultado.add(SeccionDto.desde(s));
+      }
+      return resultado;
+    }
+  }
 
   // ── Matrícula (puente HTTP→socket) ──
 
