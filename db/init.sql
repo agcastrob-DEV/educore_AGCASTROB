@@ -18,6 +18,17 @@ CREATE TABLE estudiante (
   porcentaje_beca DECIMAL(3,2) NULL               -- solo becados (0.00 .. 1.00)
 );
 
+CREATE TABLE IF NOT EXISTS empleado (
+  id            INT AUTO_INCREMENT PRIMARY KEY,
+  nombre        VARCHAR(100) NOT NULL,
+  apellidos     VARCHAR(100) NOT NULL,
+  email         VARCHAR(100) NOT NULL,
+  salario       DOUBLE NOT NULL,
+  fecha_ingreso DATE NOT NULL,
+  tipo          VARCHAR(30) NOT NULL
+);
+
+
 -- ── Datos semilla ────────────────────────────────────────────────────────────
 INSERT INTO estudiante (tipo, nombre, apellidos, email, carnet, porcentaje_beca) VALUES
   ('REGULAR', 'Ana',   'Rojas Mora',   'ana.rojas@uam.edu',   '202410000001', NULL),

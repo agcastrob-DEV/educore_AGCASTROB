@@ -1,13 +1,19 @@
 package edu.uam.educore.api;
 
+import edu.uam.educore.api.Dtos.EmpleadoDto;
+import edu.uam.educore.api.Dtos.EmpleadoRequest;
 import edu.uam.educore.api.Dtos.EstudianteDto;
 import edu.uam.educore.api.Dtos.EstudianteRequest;
 import edu.uam.educore.api.Dtos.MatriculaRequest;
+import edu.uam.educore.controller.EmpleadoController;
 import edu.uam.educore.controller.EstudianteController;
+import edu.uam.educore.dao.EmpleadoRepoSql;
 import edu.uam.educore.dao.EstudianteRepoSql;
+import edu.uam.educore.dao.ListaEmpleadoRepo;
 import edu.uam.educore.dao.ListaEstudianteRepo;
 import edu.uam.educore.dao.Repositorio;
 import edu.uam.educore.db.ConfiguracionBD;
+import edu.uam.educore.model.personas.Empleado;
 import edu.uam.educore.model.personas.Estudiante;
 import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
@@ -32,14 +38,19 @@ public class ServidorApi {
 
   public static void iniciar(int puerto) throws IOException {
     Repositorio<Estudiante> estudianteRepo;
+    Repositorio<Empleado> empleadoRepo;
     try {
-      estudianteRepo = new EstudianteRepoSql(ConfiguracionBD.desdeArchivo(".env"));
+      ConfiguracionBD config = ConfiguracionBD.desdeArchivo(".env");
+      estudianteRepo = new EstudianteRepoSql(config);
+      empleadoRepo = new EmpleadoRepoSql(config);
     } catch (IOException e) {
       // Sin .env legible caemos a memoria para no bloquear el arranque en desarrollo.
       estudianteRepo = new ListaEstudianteRepo();
+      empleadoRepo = new ListaEmpleadoRepo();
     }
 
     EstudianteController estudianteController = new EstudianteController(estudianteRepo);
+    EmpleadoController empleadoController = new EmpleadoController(empleadoRepo);
 
     Javalin app =
         Javalin.create(
@@ -63,7 +74,7 @@ public class ServidorApi {
                   (e, ctx) -> ctx.status(500).json(Map.of("error", e.getMessage())));
 
               registrarEstudiantes(cfg, estudianteController);
-              registrarEmpleados(cfg);
+              registrarEmpleados(cfg, empleadoController);
               registrarEdificios(cfg);
               registrarSecciones(cfg);
               registrarMatricula(cfg);
@@ -122,48 +133,51 @@ public class ServidorApi {
 
   // ── Empleados (P1 de cada grupo — sin controlador de nombre fijo) ──
 
-  private static void registrarEmpleados(JavalinConfig cfg) {
+  private static void registrarEmpleados(JavalinConfig cfg, EmpleadoController controller) {
     cfg.routes.get(
         "/api/empleados",
         ctx -> {
-          // TODO(estudiante · P1): reemplacen este bloque por su código. Ej.:
-          //   List<Empleado> empleados = MiControladorEmpleado.listar();
-          //   ctx.json(EmpleadoDto.listaDesde(empleados));
-          ctx.status(501).json(Map.of("error", "empleados: pendiente de implementar"));
+          List<Empleado> empleados = controller.listar();
+          ctx.json(EmpleadoDto.listaDesde(empleados));
         });
 
     cfg.routes.post(
         "/api/empleados",
         ctx -> {
-          // TODO(estudiante · P1): parseen el body y llamen a su método de registro. Ej.:
-          //   EmpleadoRequest r = ctx.bodyAsClass(EmpleadoRequest.class);
-          //   Empleado creado = MiControladorEmpleado.registrar(r.nombre(), r.apellidos(),
-          //       r.email(), r.salario(), LocalDate.parse(r.fechaIngreso()), r.tipo());
-          //   ctx.status(201).json(EmpleadoDto.desde(creado));
-          ctx.status(501).json(Map.of("error", "empleados: pendiente de implementar"));
+          EmpleadoRequest r = ctx.bodyAsClass(EmpleadoRequest.class);
+          Empleado creado =
+              controller.registrar(
+                  r.nombre(),
+                  r.apellidos(),
+                  r.email(),
+                  r.salario(),
+                  java.time.LocalDate.parse(r.fechaIngreso()),
+                  r.tipo());
+          ctx.status(201).json(EmpleadoDto.desde(creado));
         });
 
     cfg.routes.put(
         "/api/empleados/{id}",
         ctx -> {
-          // TODO(estudiante · P1): parseen el id y el body, y llamen a su método de
-          // actualización. Ej.:
-          //   int id = Integer.parseInt(ctx.pathParam("id"));
-          //   EmpleadoRequest r = ctx.bodyAsClass(EmpleadoRequest.class);
-          //   Empleado actualizado = MiControladorEmpleado.actualizar(id, r.nombre(),
-          //       r.apellidos(), r.email(), r.salario(), LocalDate.parse(r.fechaIngreso()),
-          //       r.tipo());
-          //   ctx.json(EmpleadoDto.desde(actualizado));
-          ctx.status(501).json(Map.of("error", "empleados: pendiente de implementar"));
+          int id = Integer.parseInt(ctx.pathParam("id"));
+          EmpleadoRequest r = ctx.bodyAsClass(EmpleadoRequest.class);
+          Empleado actualizado =
+              controller.actualizar(
+                  id,
+                  r.nombre(),
+                  r.apellidos(),
+                  r.email(),
+                  r.salario(),
+                  java.time.LocalDate.parse(r.fechaIngreso()),
+                  r.tipo());
+          ctx.json(EmpleadoDto.desde(actualizado));
         });
 
     cfg.routes.delete(
         "/api/empleados/{id}",
         ctx -> {
-          // TODO(estudiante · P1): llamen a su método de eliminación. Ej.:
-          //   MiControladorEmpleado.eliminar(Integer.parseInt(ctx.pathParam("id")));
-          //   ctx.status(204);
-          ctx.status(501).json(Map.of("error", "empleados: pendiente de implementar"));
+          controller.eliminar(Integer.parseInt(ctx.pathParam("id")));
+          ctx.status(204);
         });
   }
 
