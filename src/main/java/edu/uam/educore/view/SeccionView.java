@@ -19,8 +19,8 @@ public class SeccionView extends VistaBase {
   private final Repositorio<Estudiante> estudianteRepo;
 
   public SeccionView(
-      Scanner scanner, 
-      Repositorio<Seccion> seccionRepo, 
+      Scanner scanner,
+      Repositorio<Seccion> seccionRepo,
       EdificioController edificioController,
       Repositorio<Empleado> empleadoRepo,
       Repositorio<Estudiante> estudianteRepo) {
@@ -61,7 +61,7 @@ public class SeccionView extends VistaBase {
     System.out.println("\n--- ABRIR NUEVA SECCIÓN ACADÉMICA ---");
     String codigo = leerTexto("Código de Sección (ej. SC-401)");
     String curso = leerTexto("Nombre del Curso");
-    
+
     int profId = leerEntero("ID del Empleado (Docente)");
     int edId = leerEntero("ID del Edificio para el Aula");
     int aulaId = leerEntero("ID Técnico del Aula dentro del edificio");
@@ -91,7 +91,7 @@ public class SeccionView extends VistaBase {
       }
 
       Seccion s = seccionController.abrirSeccion(codigo, curso, docente, aulaSeleccionada);
-      
+
       mostrarMensaje("Sección abierta con éxito. ID Asignado: " + s.getId());
     } catch (IllegalArgumentException e) {
       mostrarError(e.getMessage());

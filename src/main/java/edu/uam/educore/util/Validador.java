@@ -3,7 +3,8 @@ package edu.uam.educore.util;
 import java.time.LocalDate;
 
 public class Validador {
-  private Validador() {}
+  private Validador() {
+  }
 
   public static boolean validarEmail(String email) {
     return email != null && email.contains("@") && email.contains(".");

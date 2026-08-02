@@ -44,10 +44,14 @@ public class Aula {
 
   public String getTipoTexto() {
     switch (this.tipo) {
-      case REGULAR: return "Regular";
-      case LABORATORIO: return "Laboratorio";
-      case AUDITORIO: return "Auditorio";
-      default: return "Aula";
+      case REGULAR:
+        return "Regular";
+      case LABORATORIO:
+        return "Laboratorio";
+      case AUDITORIO:
+        return "Auditorio";
+      default:
+        return "Aula";
     }
   }
 

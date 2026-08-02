@@ -21,7 +21,7 @@ public class EdificioController {
 
   public Edificio registrarEdificio(String codigo, String nombre) throws Exception {
     validarEdificioBase(codigo, nombre);
-    
+
     Edificio nuevo = new Edificio(proximoEdificioId, codigo, nombre);
     repo.guardar(nuevo);
     proximoEdificioId++;
@@ -42,9 +42,9 @@ public class EdificioController {
     if (ed == null) {
       throw new IllegalArgumentException("No existe edificio con ID " + id + ".");
     }
-    
+
     validarEdificioBase(codigo, nombre);
-    
+
     ed.setCodigo(codigo);
     ed.setNombre(nombre);
     repo.actualizar(ed);
@@ -56,12 +56,12 @@ public class EdificioController {
     if (ed == null) {
       throw new IllegalArgumentException("No existe edificio con ID " + id + ".");
     }
-    
+
     // Regla de integridad referencial del PDF
     if (!ed.getAulas().isEmpty()) {
       throw new IllegalArgumentException("No se puede eliminar el edificio porque todavía tiene aulas asociadas.");
     }
-    
+
     repo.eliminar(id);
   }
 
@@ -72,13 +72,13 @@ public class EdificioController {
     if (ed == null) {
       throw new IllegalArgumentException("No existe el edificio con ID " + edificioId + " para asociar el aula.");
     }
-    
+
     validarAulaBase(numero, capacidad);
-    
+
     Aula nueva = new Aula(proximoAulaId, numero, capacidad, tipo, ed);
     ed.agregarAula(nueva);
     repo.actualizar(ed); // Persiste el cambio del edificio en el repositorio
-    
+
     proximoAulaId++; // Incrementa el secuencial global
     return nueva;
   }
@@ -88,12 +88,12 @@ public class EdificioController {
     if (ed == null) {
       throw new IllegalArgumentException("No existe el edificio con ID " + edificioId + ".");
     }
-    
+
     boolean existeAula = ed.getAulas().stream().anyMatch(a -> a.getId() == aulaId);
     if (!existeAula) {
       throw new IllegalArgumentException("El aula con ID " + aulaId + " no pertenece al edificio indicado.");
     }
-    
+
     ed.removerAula(aulaId);
     repo.actualizar(ed);
   }

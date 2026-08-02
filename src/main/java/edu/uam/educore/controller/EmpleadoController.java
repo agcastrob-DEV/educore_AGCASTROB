@@ -17,9 +17,10 @@ public class EmpleadoController {
     this.repo = repo;
   }
 
-  public Empleado registrar(String nombre, String apellidos, String email, double salario, LocalDate fechaIngreso, TipoEmpleado tipo) throws Exception {
+  public Empleado registrar(String nombre, String apellidos, String email, double salario, LocalDate fechaIngreso,
+      TipoEmpleado tipo) throws Exception {
     validarBase(nombre, apellidos, email, salario, fechaIngreso);
-    
+
     Empleado e = new Empleado(proximoId, nombre, apellidos, email, salario, fechaIngreso, tipo);
     repo.guardar(e);
     proximoId++;
@@ -38,21 +39,22 @@ public class EmpleadoController {
     return null;
   }
 
-  public Empleado actualizar(int id, String nombre, String apellidos, String email, double salario, LocalDate fechaIngreso, TipoEmpleado tipo) throws Exception {
+  public Empleado actualizar(int id, String nombre, String apellidos, String email, double salario,
+      LocalDate fechaIngreso, TipoEmpleado tipo) throws Exception {
     Empleado e = buscarPorId(id);
     if (e == null) {
       throw new IllegalArgumentException("No existe empleado con ID " + id + ".");
     }
-    
+
     validarBase(nombre, apellidos, email, salario, fechaIngreso);
-    
+
     e.setNombre(nombre);
     e.setApellidos(apellidos);
     e.setEmail(email);
     e.setSalario(salario);
     e.setFechaIngreso(fechaIngreso);
     e.setTipo(tipo);
-    
+
     repo.actualizar(e);
     return e;
   }

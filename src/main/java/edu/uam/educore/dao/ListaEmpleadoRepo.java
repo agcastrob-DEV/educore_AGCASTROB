@@ -46,7 +46,8 @@ public class ListaEmpleadoRepo extends Repositorio<Empleado> {
 
   @Override
   public List<Empleado> buscarTodos() throws Exception {
-    // Retorna una nueva lista para proteger la encapsulación de los datos originales
+    // Retorna una nueva lista para proteger la encapsulación de los datos
+    // originales
     return new ArrayList<>(lista);
   }
 }

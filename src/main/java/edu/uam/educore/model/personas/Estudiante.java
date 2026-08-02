@@ -3,8 +3,10 @@ package edu.uam.educore.model.personas;
 public abstract class Estudiante extends Persona {
 
   /**
-   * Tarifa base de matrícula por período (colones). Constante de dominio compartida por todos los
-   * tipos de estudiante: vive aquí (no duplicada en cada subclase) para que un solo cambio
+   * Tarifa base de matrícula por período (colones). Constante de dominio
+   * compartida por todos los
+   * tipos de estudiante: vive aquí (no duplicada en cada subclase) para que un
+   * solo cambio
    * actualice a toda la jerarquía.
    */
   protected static final double TARIFA_BASE = 150000.0;

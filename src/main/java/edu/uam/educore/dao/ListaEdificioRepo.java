@@ -46,7 +46,8 @@ public class ListaEdificioRepo extends Repositorio<Edificio> {
 
   @Override
   public List<Edificio> buscarTodos() throws Exception {
-    // Retorna una copia para proteger los datos originales de modificaciones externas
+    // Retorna una copia para proteger los datos originales de modificaciones
+    // externas
     return new ArrayList<>(lista);
   }
 }

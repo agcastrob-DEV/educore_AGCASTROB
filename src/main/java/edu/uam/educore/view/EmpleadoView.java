@@ -103,7 +103,7 @@ public class EmpleadoView extends VistaBase {
         return;
       }
       System.out.println("\n  Datos actuales: " + existente.getInfo());
-      
+
       String nombre = leerTexto("Nuevo Nombre");
       String apellidos = leerTexto("Nuevos Apellidos");
       String email = leerTexto("Nuevo Email");
@@ -167,14 +167,20 @@ public class EmpleadoView extends VistaBase {
       System.out.println("4. Misceláneo");
       System.out.println("5. Mantenimiento");
       int opc = leerEntero("Opción");
-      
+
       switch (opc) {
-        case 1: return TipoEmpleado.DOCENTE;
-        case 2: return TipoEmpleado.ADMINISTRATIVO;
-        case 3: return TipoEmpleado.GUARDA;
-        case 4: return TipoEmpleado.MISCELANEO;
-        case 5: return TipoEmpleado.MANTENIMIENTO;
-        default: mostrarError("Selección inválida. Intente de nuevo.");
+        case 1:
+          return TipoEmpleado.DOCENTE;
+        case 2:
+          return TipoEmpleado.ADMINISTRATIVO;
+        case 3:
+          return TipoEmpleado.GUARDA;
+        case 4:
+          return TipoEmpleado.MISCELANEO;
+        case 5:
+          return TipoEmpleado.MANTENIMIENTO;
+        default:
+          mostrarError("Selección inválida. Intente de nuevo.");
       }
     }
   }

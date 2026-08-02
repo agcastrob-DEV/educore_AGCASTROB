@@ -17,7 +17,8 @@ public class EdificioView extends VistaBase {
     this.controller = new EdificioController(repo);
   }
 
-  // Método puente expuesto para que el controlador unificado de la academia lo invoque
+  // Método puente expuesto para que el controlador unificado de la academia lo
+  // invoque
   public EdificioController getController() {
     return this.controller;
   }
@@ -201,10 +202,14 @@ public class EdificioView extends VistaBase {
       System.out.println("3. Auditorio");
       int opc = leerEntero("Opción");
       switch (opc) {
-        case 1: return TipoAula.REGULAR;
-        case 2: return TipoAula.LABORATORIO;
-        case 3: return TipoAula.AUDITORIO;
-        default: mostrarError("Selección inválida. Intente de nuevo.");
+        case 1:
+          return TipoAula.REGULAR;
+        case 2:
+          return TipoAula.LABORATORIO;
+        case 3:
+          return TipoAula.AUDITORIO;
+        default:
+          mostrarError("Selección inválida. Intente de nuevo.");
       }
     }
   }
